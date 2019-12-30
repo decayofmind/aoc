@@ -5,15 +5,18 @@ from copy import deepcopy
 from itertools import combinations
 from math import gcd
 
-
 step = 0
 moons = []
 
 for r in open('input').readlines():
-#  for r in open('input_test').readlines():
+    #  for r in open('input_test').readlines():
     m = re.match(r"^<x=(-?\d+), y=(-?\d+), z=(-?\d+)>", r)
-    moon = {'pos': [int(m.group(1)),int(m.group(2)),int(m.group(3))],
-            'vel': [0,0,0]}
+    moon = {
+        'pos': [int(m.group(1)),
+                int(m.group(2)),
+                int(m.group(3))],
+        'vel': [0, 0, 0]
+    }
     moons.append(moon)
 
 pairs = list(combinations(list(range(len(moons))), 2))
@@ -51,13 +54,11 @@ for m in moons:
     for x in m['vel']:
         kin += abs(x)
 
-    energy += kin*pot
+    energy += kin * pot
 
 print(energy)
 
-
 # PART2
-
 
 # X
 moons = deepcopy(initial_state)
@@ -86,14 +87,14 @@ while True:
 
     step += 1
 
-    if ((moons[0]['pos'][0] == initial_state[0]['pos'][0]) and
-            (moons[1]['pos'][0] == initial_state[1]['pos'][0]) and
-            (moons[2]['pos'][0] == initial_state[2]['pos'][0]) and
-            (moons[3]['pos'][0] == initial_state[3]['pos'][0]) and
-            (moons[0]['vel'][0] == initial_state[0]['vel'][0]) and
-            (moons[1]['vel'][0] == initial_state[1]['vel'][0]) and
-            (moons[2]['vel'][0] == initial_state[2]['vel'][0]) and
-            (moons[3]['vel'][0] == initial_state[3]['vel'][0])):
+    if ((moons[0]['pos'][0] == initial_state[0]['pos'][0])
+            and (moons[1]['pos'][0] == initial_state[1]['pos'][0])
+            and (moons[2]['pos'][0] == initial_state[2]['pos'][0])
+            and (moons[3]['pos'][0] == initial_state[3]['pos'][0])
+            and (moons[0]['vel'][0] == initial_state[0]['vel'][0])
+            and (moons[1]['vel'][0] == initial_state[1]['vel'][0])
+            and (moons[2]['vel'][0] == initial_state[2]['vel'][0])
+            and (moons[3]['vel'][0] == initial_state[3]['vel'][0])):
         x_rep = step
         print(step)
         break
@@ -125,14 +126,14 @@ while True:
 
     step += 1
 
-    if ((moons[0]['pos'][1] == initial_state[0]['pos'][1]) and
-            (moons[1]['pos'][1] == initial_state[1]['pos'][1]) and
-            (moons[2]['pos'][1] == initial_state[2]['pos'][1]) and
-            (moons[3]['pos'][1] == initial_state[3]['pos'][1]) and
-            (moons[0]['vel'][1] == initial_state[0]['vel'][1]) and
-            (moons[1]['vel'][1] == initial_state[1]['vel'][1]) and
-            (moons[2]['vel'][1] == initial_state[2]['vel'][1]) and
-            (moons[3]['vel'][1] == initial_state[3]['vel'][1])):
+    if ((moons[0]['pos'][1] == initial_state[0]['pos'][1])
+            and (moons[1]['pos'][1] == initial_state[1]['pos'][1])
+            and (moons[2]['pos'][1] == initial_state[2]['pos'][1])
+            and (moons[3]['pos'][1] == initial_state[3]['pos'][1])
+            and (moons[0]['vel'][1] == initial_state[0]['vel'][1])
+            and (moons[1]['vel'][1] == initial_state[1]['vel'][1])
+            and (moons[2]['vel'][1] == initial_state[2]['vel'][1])
+            and (moons[3]['vel'][1] == initial_state[3]['vel'][1])):
         y_rep = step
         print(step)
         break
@@ -164,14 +165,14 @@ while True:
 
     step += 1
 
-    if ((moons[0]['pos'][2] == initial_state[0]['pos'][2]) and
-            (moons[1]['pos'][2] == initial_state[1]['pos'][2]) and
-            (moons[2]['pos'][2] == initial_state[2]['pos'][2]) and
-            (moons[3]['pos'][2] == initial_state[3]['pos'][2]) and
-            (moons[0]['vel'][2] == initial_state[0]['vel'][2]) and
-            (moons[1]['vel'][2] == initial_state[1]['vel'][2]) and
-            (moons[2]['vel'][2] == initial_state[2]['vel'][2]) and
-            (moons[3]['vel'][2] == initial_state[3]['vel'][2])):
+    if ((moons[0]['pos'][2] == initial_state[0]['pos'][2])
+            and (moons[1]['pos'][2] == initial_state[1]['pos'][2])
+            and (moons[2]['pos'][2] == initial_state[2]['pos'][2])
+            and (moons[3]['pos'][2] == initial_state[3]['pos'][2])
+            and (moons[0]['vel'][2] == initial_state[0]['vel'][2])
+            and (moons[1]['vel'][2] == initial_state[1]['vel'][2])
+            and (moons[2]['vel'][2] == initial_state[2]['vel'][2])
+            and (moons[3]['vel'][2] == initial_state[3]['vel'][2])):
         z_rep = step
         print(step)
         break
@@ -180,4 +181,5 @@ while True:
 def lcm(a, b):
     return int(a * b // gcd(a, b))
 
-print(lcm(lcm(x_rep,y_rep), z_rep))
+
+print(lcm(lcm(x_rep, y_rep), z_rep))

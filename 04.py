@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+from typing import Dict
+
 start = 123257
 stop = 647015
 
@@ -7,8 +9,8 @@ ans1 = []
 
 for i in range(start, stop):
     n = [int(d) for d in str(i)]
-    for d in range(len(n)-1):
-        if n[d+1] >= n[d]:
+    for d in range(len(n) - 1):
+        if n[d + 1] >= n[d]:
             pass
         else:
             good = False
@@ -24,7 +26,7 @@ ans2 = []
 
 for i in ans1:
     n = [int(d) for d in str(i)]
-    hits = {}
+    hits: Dict[int, int] = {}
     groups = {}
 
     for d in n:
@@ -33,13 +35,12 @@ for i in ans1:
         else:
             hits[d] = 1
 
-    for k,v in hits.items():
+    for k, v in hits.items():
         if v >= 2:
             groups[k] = v
 
     if len(groups) > 0 and 2 in groups.values():
         print(i)
         ans2.append(i)
-
 
 print(len(ans2))

@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+from typing import Dict
+
 records = []
 
 #  d = """COM)B
@@ -22,7 +24,7 @@ with open('input') as fp:
     for e in fp.readlines():
         records.append(e.strip())
 
-orbits = {}
+orbits: Dict[str, list] = {}
 
 for r in records:
     a, b = r.split(')')
@@ -31,19 +33,18 @@ for r in records:
     else:
         orbits[a] = [b]
 
-ends = {}
+ends: Dict[str, list] = {}
 
-for k,v in orbits.items():
+for k, v in orbits.items():
     for i in v:
         if not orbits.get(i):
             ends[i] = []
 
 orbits.update(ends)
 
-orbit_counts = {}
 
 def count_orbits(orbits, start, end, path=[]):
-    path = path+[start]
+    path = path + [start]
     if start == end:
         return path
     if not orbits.get(start):
@@ -55,18 +56,20 @@ def count_orbits(orbits, start, end, path=[]):
                 return newpath
     return None
 
+
 i = 0
 for k in orbits.keys():
-    i += len(count_orbits(orbits,'COM',k))-1
+    i += len(count_orbits(orbits, 'COM', k)) - 1
 
 print(i)
 
-p1 = count_orbits(orbits,'COM','YOU')
-p2 = count_orbits(orbits,'COM','SAN')
+p1 = count_orbits(orbits, 'COM', 'YOU')
+p2 = count_orbits(orbits, 'COM', 'SAN')
 
-def list_diff(l1,l2):
+
+def list_diff(l1, l2):
     temp = set(l2)
     return [val for val in l1 if val not in temp]
 
-print(len(list_diff(p1,p2))+len(list_diff(p2,p1))-2)
 
+print(len(list_diff(p1, p2)) + len(list_diff(p2, p1)) - 2)

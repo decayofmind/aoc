@@ -10,8 +10,8 @@ class IntCode(object):
         self.inputs = []
 
     def get_arg(self, pos, modes):
-        mode = (0 if pos>=len(modes) else modes[pos])
-        arg = self.program[self.ptr+(pos+1)]
+        mode = (0 if pos >= len(modes) else modes[pos])
+        arg = self.program[self.ptr + (pos + 1)]
         if mode == 0:
             while len(self.program) <= arg:
                 self.program.append(0)
@@ -19,12 +19,12 @@ class IntCode(object):
         elif mode == 2:
             while len(self.program) <= arg:
                 self.program.append(0)
-            arg = self.program[arg+self.rel_base]
+            arg = self.program[arg + self.rel_base]
         return arg
 
     def get_idx(self, pos, modes):
-        mode = (0 if pos>=len(modes) else modes[pos])
-        arg = self.program[self.ptr+(pos+1)]
+        mode = (0 if pos >= len(modes) else modes[pos])
+        arg = self.program[self.ptr + (pos + 1)]
         if mode == 0:
             pass
         elif mode == 2:
@@ -44,10 +44,14 @@ class IntCode(object):
             modes = list(reversed([int(x) for x in instr[:-2]]))
 
             if op_code == 1:
-                self.program[self.get_idx(2,modes)] = self.get_arg(0,modes) + self.get_arg(1,modes)
+                self.program[self.get_idx(
+                    2,
+                    modes)] = self.get_arg(0, modes) + self.get_arg(1, modes)
                 self.ptr += 4
             elif op_code == 2:
-                self.program[self.get_idx(2,modes)] = self.get_arg(0,modes) * self.get_arg(1,modes)
+                self.program[self.get_idx(
+                    2,
+                    modes)] = self.get_arg(0, modes) * self.get_arg(1, modes)
                 self.ptr += 4
             elif op_code == 3:
                 a1 = self.get_idx(0, modes)
@@ -64,14 +68,18 @@ class IntCode(object):
                 else:
                     return a1
             elif op_code == 5:
-                self.ptr = self.get_arg(1, modes) if self.get_arg(0, modes) != 0 else self.ptr + 3
+                self.ptr = self.get_arg(
+                    1, modes) if self.get_arg(0, modes) != 0 else self.ptr + 3
             elif op_code == 6:
-                self.ptr = self.get_arg(1, modes) if self.get_arg(0, modes) == 0 else self.ptr + 3
+                self.ptr = self.get_arg(1, modes) if self.get_arg(
+                    0, modes) == 0 else self.ptr + 3
             elif op_code == 7:
-                self.program[self.get_idx(2, modes)] = (1 if self.get_arg(0, modes) < self.get_arg(1, modes) else 0)
+                self.program[self.get_idx(2, modes)] = (1 if self.get_arg(
+                    0, modes) < self.get_arg(1, modes) else 0)
                 self.ptr += 4
             elif op_code == 8:
-                self.program[self.get_idx(2, modes)] = (1 if self.get_arg(0, modes) == self.get_arg(1, modes) else 0)
+                self.program[self.get_idx(2, modes)] = (1 if self.get_arg(
+                    0, modes) == self.get_arg(1, modes) else 0)
                 self.ptr += 4
             elif op_code == 9:
                 self.rel_base += self.get_arg(0, modes)
@@ -81,13 +89,14 @@ class IntCode(object):
                 self.running = False
                 return None
 
+
 program = [int(x) for x in open('input').read().strip().split(',')]
 
 p = IntCode(program)
 
 #  cur_pos = (0,0)
-cur_pos = (34,58)
-cur_dir = 90
+cur_pos = (34, 58)
+cur_dir = float(90)
 panels = {}
 
 start = True
@@ -116,13 +125,13 @@ while p.running:
     cur_dir = cur_dir % 360.0
 
     if cur_dir == 180:
-        cur_pos = (cur_pos[0]+1, cur_pos[1])
+        cur_pos = (cur_pos[0] + 1, cur_pos[1])
     elif cur_dir == 0:
-        cur_pos = (cur_pos[0]-1, cur_pos[1])
+        cur_pos = (cur_pos[0] - 1, cur_pos[1])
     elif cur_dir == 90:
-        cur_pos = (cur_pos[0], cur_pos[1]-1)
+        cur_pos = (cur_pos[0], cur_pos[1] - 1)
     elif cur_dir == 270:
-        cur_pos = (cur_pos[0], cur_pos[1]+1)
+        cur_pos = (cur_pos[0], cur_pos[1] + 1)
     else:
         print("Wrong move")
 
@@ -131,10 +140,10 @@ print(len(panels))
 x_cords = sorted([p[0] for p in panels.keys()])
 y_cords = sorted([p[1] for p in panels.keys()])
 
-for y in range(y_cords[0], y_cords[-1]+1):
+for y in range(y_cords[0], y_cords[-1] + 1):
     print()
-    for x in range(x_cords[0], x_cords[-1]+1):
-        if panels.get((x,y), 0) == 1:
+    for x in range(x_cords[0], x_cords[-1] + 1):
+        if panels.get((x, y), 0) == 1:
             print('#', end='')
         else:
             print(' ', end='')

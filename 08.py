@@ -8,8 +8,8 @@ Y = 6
 layers = []
 layer = []
 i = 0
-while i < len(input_data)+1:
-    x = input_data[i:i+X]
+while i < len(input_data) + 1:
+    x = input_data[i:i + X]
     layer.append(x)
     if len(layer) == 6:
         layers.append(layer)
@@ -23,10 +23,10 @@ for l in layers:
     c = {}
     for r in l:
         for x in r:
-            c[x] = c.get(x,0)+1
+            c[x] = c.get(x, 0) + 1
     counts.append(c)
 
-zeros_c = list(map(lambda x : x.get(0),counts))
+zeros_c = list(map(lambda x: x.get(0), counts))
 
 for n, x in enumerate(zeros_c):
     if x == min(zeros_c):
@@ -34,12 +34,11 @@ for n, x in enumerate(zeros_c):
 
 print(ans)
 
-
 # part 2
 
 img_merged = []
 for y in range(Y):
-    img_merged.append(list(zip(*list(map(lambda x: x[y],layers)))))
+    img_merged.append(list(zip(*list(map(lambda x: x[y], layers)))))
 
 image = []
 for r in img_merged:

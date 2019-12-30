@@ -19,6 +19,7 @@ class Module(object):
             m_part = self._calculate_fuel(m_part)
         return m_total
 
+
 total_fuel = 0
 
 with open('input', 'r') as input:

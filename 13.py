@@ -1,6 +1,8 @@
 #!/usr/env/bin python
 
 import curses
+from typing import List
+
 
 class IntCode(object):
     def __init__(self, program):
@@ -11,8 +13,8 @@ class IntCode(object):
         self.inputs = []
 
     def get_arg(self, pos, modes):
-        mode = (0 if pos>=len(modes) else modes[pos])
-        arg = self.program[self.ptr+(pos+1)]
+        mode = (0 if pos >= len(modes) else modes[pos])
+        arg = self.program[self.ptr + (pos + 1)]
         if mode == 0:
             while len(self.program) <= arg:
                 self.program.append(0)
@@ -20,12 +22,12 @@ class IntCode(object):
         elif mode == 2:
             while len(self.program) <= arg:
                 self.program.append(0)
-            arg = self.program[arg+self.rel_base]
+            arg = self.program[arg + self.rel_base]
         return arg
 
     def get_idx(self, pos, modes):
-        mode = (0 if pos>=len(modes) else modes[pos])
-        arg = self.program[self.ptr+(pos+1)]
+        mode = (0 if pos >= len(modes) else modes[pos])
+        arg = self.program[self.ptr + (pos + 1)]
         if mode == 0:
             pass
         elif mode == 2:
@@ -45,10 +47,14 @@ class IntCode(object):
             modes = list(reversed([int(x) for x in instr[:-2]]))
 
             if op_code == 1:
-                self.program[self.get_idx(2,modes)] = self.get_arg(0,modes) + self.get_arg(1,modes)
+                self.program[self.get_idx(
+                    2,
+                    modes)] = self.get_arg(0, modes) + self.get_arg(1, modes)
                 self.ptr += 4
             elif op_code == 2:
-                self.program[self.get_idx(2,modes)] = self.get_arg(0,modes) * self.get_arg(1,modes)
+                self.program[self.get_idx(
+                    2,
+                    modes)] = self.get_arg(0, modes) * self.get_arg(1, modes)
                 self.ptr += 4
             elif op_code == 3:
                 a1 = self.get_idx(0, modes)
@@ -68,14 +74,18 @@ class IntCode(object):
                     yield a1
                     #  return a1
             elif op_code == 5:
-                self.ptr = self.get_arg(1, modes) if self.get_arg(0, modes) != 0 else self.ptr + 3
+                self.ptr = self.get_arg(
+                    1, modes) if self.get_arg(0, modes) != 0 else self.ptr + 3
             elif op_code == 6:
-                self.ptr = self.get_arg(1, modes) if self.get_arg(0, modes) == 0 else self.ptr + 3
+                self.ptr = self.get_arg(1, modes) if self.get_arg(
+                    0, modes) == 0 else self.ptr + 3
             elif op_code == 7:
-                self.program[self.get_idx(2, modes)] = (1 if self.get_arg(0, modes) < self.get_arg(1, modes) else 0)
+                self.program[self.get_idx(2, modes)] = (1 if self.get_arg(
+                    0, modes) < self.get_arg(1, modes) else 0)
                 self.ptr += 4
             elif op_code == 8:
-                self.program[self.get_idx(2, modes)] = (1 if self.get_arg(0, modes) == self.get_arg(1, modes) else 0)
+                self.program[self.get_idx(2, modes)] = (1 if self.get_arg(
+                    0, modes) == self.get_arg(1, modes) else 0)
                 self.ptr += 4
             elif op_code == 9:
                 self.rel_base += self.get_arg(0, modes)
@@ -84,6 +94,7 @@ class IntCode(object):
                 assert op_code == 99
                 self.running = False
                 return None
+
 
 program = [int(x) for x in open('input').read().strip().split(',')]
 
@@ -104,20 +115,14 @@ program = [int(x) for x in open('input').read().strip().split(',')]
 
 #  print(block_tiles_count)
 
-objects = {
-    0: ' ',
-    1: '#',
-    2: 'X',
-    3: 'W',
-    4: '*'
-}
+objects = {0: ' ', 1: '#', 2: 'X', 3: 'W', 4: '*'}
 
 p = IntCode(program)
 
 tiles = {}
 inputs = []
 #  saved=[int(x) for x in open('save2').read().strip().split(',')]
-saved = []
+saved: List[int] = []
 
 inp = 0
 
@@ -146,10 +151,11 @@ while p.running:
             inp = 0
     inputs.append(int(inp))
     output = [o for o in p.run(inputs=[inp])]
-    tiles.update({(output[i],output[i+1]): output[i+2] for i in range(0, len(output), 3)})
+    tiles.update({(output[i], output[i + 1]): output[i + 2]
+                  for i in range(0, len(output), 3)})
     DIM = (max([t[0] for t in tiles.keys()]), max([t[1] for t in tiles]))
     if not saved:
-        for k,v in tiles.items():
+        for k, v in tiles.items():
             if v == 4:
                 ball = k
             if v == 3:
@@ -161,14 +167,16 @@ while p.running:
         #      inp = -1
         #  else:0
         #      inp = 0
-        score.addstr(1, 2, 'SCORE: {} | B:{}/P:{}'.format(tiles.get((-1,0)), ball, platform ))
+        score.addstr(
+            1, 2, 'SCORE: {} | B:{}/P:{}'.format(tiles.get((-1, 0)), ball,
+                                                 platform))
         score.refresh()
-        for y in range(DIM[1]+1):
-            for x in range(DIM[0]+1):
-                if tiles.get((x,y)):
-                    main.addch(y+1, x+1, objects.get(tiles[(x,y)]))
+        for y in range(DIM[1] + 1):
+            for x in range(DIM[0] + 1):
+                if tiles.get((x, y)):
+                    main.addch(y + 1, x + 1, objects[tiles[(x, y)]])
                 else:
-                    main.addch(y+1, x+1, objects[0])
+                    main.addch(y + 1, x + 1, objects[0])
     main.refresh()
     curses.napms(300)
 

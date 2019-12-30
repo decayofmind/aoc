@@ -3,6 +3,7 @@
 import random
 from copy import deepcopy
 from time import sleep
+from typing import List
 
 
 class IntCode(object):
@@ -14,8 +15,8 @@ class IntCode(object):
         self.inputs = []
 
     def get_arg(self, pos, modes):
-        mode = (0 if pos>=len(modes) else modes[pos])
-        arg = self.program[self.ptr+(pos+1)]
+        mode = (0 if pos >= len(modes) else modes[pos])
+        arg = self.program[self.ptr + (pos + 1)]
         if mode == 0:
             while len(self.program) <= arg:
                 self.program.append(0)
@@ -23,12 +24,12 @@ class IntCode(object):
         elif mode == 2:
             while len(self.program) <= arg:
                 self.program.append(0)
-            arg = self.program[arg+self.rel_base]
+            arg = self.program[arg + self.rel_base]
         return arg
 
     def get_idx(self, pos, modes):
-        mode = (0 if pos>=len(modes) else modes[pos])
-        arg = self.program[self.ptr+(pos+1)]
+        mode = (0 if pos >= len(modes) else modes[pos])
+        arg = self.program[self.ptr + (pos + 1)]
         if mode == 0:
             pass
         elif mode == 2:
@@ -48,10 +49,14 @@ class IntCode(object):
             modes = list(reversed([int(x) for x in instr[:-2]]))
 
             if op_code == 1:
-                self.program[self.get_idx(2,modes)] = self.get_arg(0,modes) + self.get_arg(1,modes)
+                self.program[self.get_idx(
+                    2,
+                    modes)] = self.get_arg(0, modes) + self.get_arg(1, modes)
                 self.ptr += 4
             elif op_code == 2:
-                self.program[self.get_idx(2,modes)] = self.get_arg(0,modes) * self.get_arg(1,modes)
+                self.program[self.get_idx(
+                    2,
+                    modes)] = self.get_arg(0, modes) * self.get_arg(1, modes)
                 self.ptr += 4
             elif op_code == 3:
                 a1 = self.get_idx(0, modes)
@@ -71,14 +76,18 @@ class IntCode(object):
                     #  yield a1
                     return a1
             elif op_code == 5:
-                self.ptr = self.get_arg(1, modes) if self.get_arg(0, modes) != 0 else self.ptr + 3
+                self.ptr = self.get_arg(
+                    1, modes) if self.get_arg(0, modes) != 0 else self.ptr + 3
             elif op_code == 6:
-                self.ptr = self.get_arg(1, modes) if self.get_arg(0, modes) == 0 else self.ptr + 3
+                self.ptr = self.get_arg(1, modes) if self.get_arg(
+                    0, modes) == 0 else self.ptr + 3
             elif op_code == 7:
-                self.program[self.get_idx(2, modes)] = (1 if self.get_arg(0, modes) < self.get_arg(1, modes) else 0)
+                self.program[self.get_idx(2, modes)] = (1 if self.get_arg(
+                    0, modes) < self.get_arg(1, modes) else 0)
                 self.ptr += 4
             elif op_code == 8:
-                self.program[self.get_idx(2, modes)] = (1 if self.get_arg(0, modes) == self.get_arg(1, modes) else 0)
+                self.program[self.get_idx(2, modes)] = (1 if self.get_arg(
+                    0, modes) == self.get_arg(1, modes) else 0)
                 self.ptr += 4
             elif op_code == 9:
                 self.rel_base += self.get_arg(0, modes)
@@ -88,38 +97,27 @@ class IntCode(object):
                 self.running = False
                 return None
 
+
 program = [int(x) for x in open('input').read().strip().split(',')]
 
 field = {}
-start_pos = (20,20)
+start_pos = (20, 20)
 
-movements = {
-    1: (0,1),
-    2: (0,-1),
-    3: (1,0),
-    4: (-1,0)
-}
+movements = {1: (0, 1), 2: (0, -1), 3: (1, 0), 4: (-1, 0)}
 
 mk = list(movements.keys())
 
-opposites = {
-    1: 2,
-    2: 1,
-    3: 4,
-    4: 3
-}
+opposites = {1: 2, 2: 1, 3: 4, 4: 3}
 
 
 def draw(f):
-    #  X_len = abs(max([x[0] for x in f.keys()]) - min([x[0] for x in f.keys()]))+4
-    #  Y_len = abs(max([x[1] for x in f.keys()]) - min([x[1] for x in f.keys()]))+4
     X_len = Y_len = 45
 
     for y in range(0, Y_len):
         print('')
         print('\033[92m' + str(y)[-1] + '\033[0m', end=' ')
         for x in range(0, X_len):
-            s = f.get((x,y),0)
+            s = f.get((x, y), 0)
             if s == 0:  # wall
                 char = '#'
             elif s == 1:  # corridor
@@ -139,6 +137,7 @@ def draw(f):
     print('\033[0m', end='')
     print()
 
+
 def get_surround(p, f, t):
     s = []
     for v in movements.values():
@@ -146,6 +145,7 @@ def get_surround(p, f, t):
         if f.get(c) == t:
             s.append(c)
     return s
+
 
 # BRUTEFORCE METHOD (just oxygen)
 
@@ -170,6 +170,7 @@ def get_surround(p, f, t):
 #          break
 #      random.shuffle(mk)
 
+
 # recursive walkthrough METHOD (full board)
 def walk(start, program):
     P = IntCode(program)
@@ -179,7 +180,7 @@ def walk(start, program):
 
     while True:
         for m in mk:
-            new_pos = (pos[0]+movements[m][0], pos[1]+movements[m][1])
+            new_pos = (pos[0] + movements[m][0], pos[1] + movements[m][1])
             if not field.get(new_pos):
                 res = P.run(inputs=[m])
 
@@ -192,7 +193,8 @@ def walk(start, program):
                     assert _ == 1
 
                     for m_b in mk:
-                        pos_b = (pos[0]+movements[m_b][0], pos[1]+movements[m_b][1])
+                        pos_b = (pos[0] + movements[m_b][0],
+                                 pos[1] + movements[m_b][1])
                         if not field.get(pos_b):
                             res_b = P.run(inputs=[m_b])
                             if res_b == 1:
@@ -217,17 +219,17 @@ def walk(start, program):
         if len(get_surround(pos, field, 0)) == 3:
             break
 
+
 walk(start_pos, program)
 field[start_pos] = 9
 draw(field)
-
 
 # PART 1
 
 field1 = deepcopy(field)
 
 field1[start_pos] = 9
-path_buf = [[]]
+path_buf: List[list] = [[]]
 fork_buf = []
 
 pos = start_pos
@@ -242,7 +244,6 @@ while True:
     s = get_surround(pos, field1, 1)
 
     path_buf[-1].append(pos)
-
 
     if len(s) > 1:
         fork_buf.append(pos)
@@ -263,7 +264,7 @@ field1[start_pos] = 9
 draw(field1)
 
 ans1 = 0
-for k,v in field1.items():
+for k, v in field1.items():
     if v == 8 or v == 9:
         ans1 += 1
 print(ans1)
@@ -272,10 +273,9 @@ quit()
 # PART 2
 
 oxygen_pos = None
-for k,v in field.items():
+for k, v in field.items():
     if v == 2:
         oxygen_pos = k
-
 
 minutes = 0
 

@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 )
@@ -18,15 +19,13 @@ func simulate(state map[int]int, days int) map[int]int {
 		}
 
 		for i := 1; i < 9; i++ {
-			tomorrow[i-1] += now[i]
-			tomorrow[i] -= now[i]
+			tomorrow[i-1] = now[i]
 		}
 
 		fresh := now[0]
 
 		tomorrow[6] += fresh
 		tomorrow[8] = fresh
-		tomorrow[0] -= fresh
 
 		now = tomorrow
 	}
@@ -34,7 +33,12 @@ func simulate(state map[int]int, days int) map[int]int {
 }
 
 func main() {
-	file, err := os.ReadFile("./input")
+	path, err := os.Getwd()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	file, err := os.ReadFile(filepath.Join(path, "/input"))
 
 	if err != nil {
 		panic(err)

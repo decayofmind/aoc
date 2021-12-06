@@ -1,74 +1,50 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"os"
+	"path/filepath"
 	"strconv"
+	"strings"
 )
 
-func sum(array []string) int {
+func countComparisons(records []int) int {
+	var count int
+	for i := 1; i < len(records); i++ {
+		if records[i] > records[i-1] {
+			count++
+		}
+	}
+	return count
+}
+
+func sum(array []int) int {
 	result := 0
 	for _, v := range array {
-		i, _ := strconv.Atoi(v)
-		result += i
+		result += v
 	}
 	return result
 }
 
 func main() {
-	file, err := os.Open("./data.txt")
+	path, _ := os.Getwd()
+	file, _ := os.ReadFile(filepath.Join(path, "/input"))
 
-	if err != nil {
-		panic(err)
+	data := strings.Split(string(file), "\n")
+	records := make([]int, 0)
+
+	for _, l := range data {
+		l_i, _ := strconv.Atoi(l)
+		records = append(records, l_i)
 	}
-
-	scanner := bufio.NewScanner(file)
-
-	var lines []string
-
-	for scanner.Scan() {
-		lines = append(lines, scanner.Text())
-	}
-
-	file.Close()
-
-	var answer1 int
-
-	for nr, line := range lines {
-		if nr == 0 {
-			continue
-		}
-
-		cur, _ := strconv.Atoi(line)
-		prev, _ := strconv.Atoi(lines[nr-1])
-
-		if cur > prev {
-			answer1++
-		}
-	}
-
-	fmt.Println(answer1)
-
-	var answer2 int
 
 	var window_sums []int
 
-	for i := 0; i < (len(lines) - 2); i++ {
-		window := lines[i : i+3]
-
+	for i := 0; i < (len(records) - 2); i++ {
+		window := records[i : i+3]
 		window_sums = append(window_sums, sum(window))
 	}
 
-	for nr := range window_sums {
-		if nr == 0 {
-			continue
-		}
-
-		if window_sums[nr] > window_sums[nr-1] {
-			answer2++
-		}
-	}
-
-	fmt.Println(answer2)
+	fmt.Println("1: ", countComparisons(records))
+	fmt.Println("1: ", countComparisons(window_sums))
 }

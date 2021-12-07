@@ -1,69 +1,71 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"os"
-	"strconv"
 	"strings"
 )
 
+type Move struct {
+	direction string
+	value     int
+}
+
+func makeMovements(moves *[]Move, aim bool) (int, int) {
+	var (
+		x, y, aim_pos int
+	)
+
+	for _, m := range *moves {
+		switch m.direction {
+		case "forward":
+			if aim {
+				x += m.value
+				y += (aim_pos * m.value)
+			} else {
+				x += m.value
+			}
+		case "up":
+			if aim {
+				aim_pos += m.value
+			} else {
+				y += m.value
+			}
+		case "down":
+			if aim {
+				aim_pos -= m.value
+			} else {
+				y -= m.value
+			}
+		}
+	}
+	return x, y
+}
+
 func main() {
-	file, err := os.Open("./data.txt")
+	var (
+		ans1, ans2 int
+	)
 
-	if err != nil {
-		panic(err)
+	file, _ := os.ReadFile("./input")
+
+	var moves []Move
+
+	for _, l := range strings.Split(string(file), "\n") {
+		var (
+			direction string
+			value     int
+		)
+		fmt.Sscanf(l, "%s %d", &direction, &value)
+		moves = append(moves, Move{direction: direction, value: value})
 	}
 
-	scanner := bufio.NewScanner(file)
+	x, y := makeMovements(&moves, false)
+	ans1 = x * y * -1
 
-	var data []string
+	x, y = makeMovements(&moves, true)
+	ans2 = x * y * -1
 
-	for scanner.Scan() {
-		data = append(data, scanner.Text())
-	}
-
-	file.Close()
-
-	var pos_x = 0
-	var pos_y = 0
-	var aim = 0
-
-	for _, line := range data {
-		parsed := strings.Split(line, " ")
-		direction := parsed[0]
-		step, _ := strconv.Atoi(parsed[1])
-
-		switch direction {
-		case "forward":
-			pos_x += step
-		case "up":
-			pos_y += step
-		case "down":
-			pos_y -= step
-		}
-	}
-
-	fmt.Println(pos_x * pos_y * -1)
-
-	pos_x = 0
-	pos_y = 0
-
-	for _, line := range data {
-		parsed := strings.Split(line, " ")
-		direction := parsed[0]
-		step, _ := strconv.Atoi(parsed[1])
-
-		switch direction {
-		case "forward":
-			pos_x += step
-			pos_y += (aim * step)
-		case "up":
-			aim += step
-		case "down":
-			aim -= step
-		}
-	}
-
-	fmt.Println(pos_x * pos_y * -1)
+	fmt.Println("1: ", ans1)
+	fmt.Println("2: ", ans2)
 }

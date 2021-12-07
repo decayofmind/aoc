@@ -34,11 +34,7 @@ func arrayMax(array []int) int {
 func getFuel(p1, p2 int, ans2 bool) int {
 	distance := int(math.Abs(float64(p2 - p1)))
 	if ans2 {
-		var fuel int
-		for i := 0; i <= distance; i++ {
-			fuel += i
-		}
-		return fuel
+		return (distance * (distance + 1)) / 2
 	}
 	return distance
 }

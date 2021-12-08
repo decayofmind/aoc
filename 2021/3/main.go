@@ -73,6 +73,6 @@ func main() {
 	co2, _ := strconv.ParseInt(filter(data[:len(data)-1], "co2"), 2, 64)
 
 	fmt.Println("1: ", gamma*epsilon)
-	fmt.Println("1: ", o2*co2)
+	fmt.Println("2: ", o2*co2)
 
 }

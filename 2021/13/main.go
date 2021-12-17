@@ -8,8 +8,7 @@ import (
 )
 
 type Dot struct {
-	x, y    int
-	visible bool
+	x, y int
 }
 
 type Fold struct {
@@ -69,7 +68,7 @@ func main() {
 			var x, y int
 			fmt.Sscanf(l, "%d,%d", &x, &y)
 
-			d := Dot{x: x, y: y, visible: true}
+			d := Dot{x: x, y: y}
 
 			paper = append(paper, d)
 			key := fmt.Sprintf("%d:%d", x, y)
